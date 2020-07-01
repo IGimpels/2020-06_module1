@@ -13,12 +13,15 @@ public class Character : MonoBehaviour
         Attack,
         BeginShoot,
         Shoot,
+        BeginDie,
+        Die,
     }
 
     public enum Weapon
     {
         Pistol,
         Bat,
+        Fist,
     }
 
     public Weapon weapon;
@@ -41,14 +44,20 @@ public class Character : MonoBehaviour
 
     public void SetState(State newState)
     {
+        if (state == State.Die)
+            return;
         state = newState;
     }
 
     [ContextMenu("Attack")]
     void AttackEnemy()
     {
+        if (state == State.Die)
+            return;
+
         switch (weapon) {
             case Weapon.Bat:
+            case Weapon.Fist:
                 state = State.RunningToEnemy;
                 break;
 
@@ -57,6 +66,16 @@ public class Character : MonoBehaviour
                 break;
         }
     }
+
+    [ContextMenu("Death")]
+    void BeDie()
+    {
+        if (state == State.Die)
+            return;
+
+        state = State.BeginDie;        
+    }
+
 
     bool RunTowards(Vector3 targetPosition, float distanceFromTarget)
     {
@@ -97,11 +116,23 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginAttack:
-                animator.SetTrigger("MeleeAttack");
+                switch (weapon)
+                {
+                    case Weapon.Bat:
+                        animator.SetTrigger("MeleeAttack");
+                        break;
+                    case Weapon.Fist:
+                        animator.SetTrigger("FistAttack");
+                        break;
+
+                }
                 state = State.Attack;
                 break;
 
             case State.Attack:
+                break;
+
+            case State.Shoot:
                 break;
 
             case State.BeginShoot:
@@ -109,13 +140,17 @@ public class Character : MonoBehaviour
                 state = State.Shoot;
                 break;
 
-            case State.Shoot:
-                break;
-
             case State.RunningFromEnemy:
                 animator.SetFloat("Speed", runSpeed);
                 if (RunTowards(originalPosition, 0.0f))
                     state = State.Idle;
+                break;
+
+            case State.BeginDie:
+                animator.SetTrigger("Die");
+                state = State.Die;
+                break;
+            case State.Die:
                 break;
         }
     }
