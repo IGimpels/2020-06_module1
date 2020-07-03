@@ -20,12 +20,14 @@ public class CharacterAnimationEvents : MonoBehaviour
     void MeleeHit()
     {
         character.target.GetComponentInParent<Character>().SetState(Character.State.BeginDie);
+        character.target = null;
     }
 
 
     void ShootEnd()
     {
         character.target.GetComponentInParent<Character>().SetState(Character.State.BeginDie);
+        character.target = null;
         character.SetState(Character.State.Idle);
     }
 }

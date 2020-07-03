@@ -25,6 +25,12 @@ public class Character : MonoBehaviour
     }
 
     public Weapon weapon;
+    Weapon currentWeapon;
+
+    public GameObject pistol;
+    public GameObject bat;
+    public GameObject fist;
+
     public float runSpeed;
     public float distanceFromEnemy;
     public Transform target;
@@ -32,6 +38,17 @@ public class Character : MonoBehaviour
     Animator animator;
     Vector3 originalPosition;
     Quaternion originalRotation;
+
+    void ShowCurrentWeapon()
+    {
+        currentWeapon = weapon;
+        if (pistol != null)
+            pistol.SetActive(weapon == Weapon.Pistol);
+        if (bat != null)
+            bat.SetActive(weapon == Weapon.Bat);
+        if (fist != null)
+            fist.SetActive(weapon == Weapon.Fist);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +69,10 @@ public class Character : MonoBehaviour
     [ContextMenu("Attack")]
     void AttackEnemy()
     {
-        if (state == State.Die)
+        if (state != State.Idle)
+            return;
+
+        if(target == null)
             return;
 
         switch (weapon) {
@@ -103,6 +123,8 @@ public class Character : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(weapon != currentWeapon)
+            ShowCurrentWeapon();
         switch (state) {
             case State.Idle:
                 animator.SetFloat("Speed", 0.0f);
