@@ -17,15 +17,8 @@ public class CharacterAnimationEvents : MonoBehaviour
         character.SetState(Character.State.RunningFromEnemy);
     }
 
-    void MeleeHit()
-    {
-        character.target.GetComponentInParent<Character>().SetState(Character.State.BeginDie);
-    }
-
-
     void ShootEnd()
     {
-        character.target.GetComponentInParent<Character>().SetState(Character.State.BeginDie);
         character.SetState(Character.State.Idle);
     }
 }
