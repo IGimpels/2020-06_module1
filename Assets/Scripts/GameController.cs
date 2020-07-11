@@ -1,22 +1,56 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.Playables;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public CanvasGroup levelMenuGroup;
     public CanvasGroup buttonsCanvasGroup;
+    public CanvasGroup endGameCanvas;
     public Button switchButton;
+
     [SerializeField] private Character[] playerCharacters = default;
     [SerializeField] private Character[] enemyCharacters = default;
     Character currentTarget;
     bool waitingForInput;
 
+    private void Awake()
+    {
+        Utility.SetCanvasGroupEnabled(levelMenuGroup, false);
+        Utility.SetCanvasGroupEnabled(endGameCanvas, false);
+    }
     // Start is called before the first frame update
     void Start()
     {
         switchButton.onClick.AddListener(NextTarget);
         StartCoroutine(GameLoop());
+    }
+
+    public void PauseGame()
+    {
+        Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, false);
+        Utility.SetCanvasGroupEnabled(levelMenuGroup, true);
+    }
+
+    public void ContinueGame()
+    {
+        Utility.SetCanvasGroupEnabled(levelMenuGroup, false);
+        Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, true);
+    }
+
+    public void RestartLevel()
+    {
+        var curScene = SceneManager.GetActiveScene();
+        LoadingScreen.instance.LoadScene(curScene.name);
+
+    }
+    public void ExitMainMenu()
+    {
+        LoadingScreen.instance.LoadScene("MainMenu");
     }
 
     public void PlayerAttack()
@@ -72,12 +106,20 @@ public class GameController : MonoBehaviour
 
     void PlayerWon()
     {
+        var endGameText = endGameCanvas.GetComponentInChildren<TextMeshProUGUI>();
+        endGameText.SetText("You won, congratulation!");
+        Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, false);
+        Utility.SetCanvasGroupEnabled(endGameCanvas, true);
         Debug.Log("Player won");
     }
 
     void PlayerLost()
     {
-        Debug.Log("Player lost");
+        var endGameText = endGameCanvas.GetComponentInChildren<TextMeshProUGUI>();
+        endGameText.SetText("You lost...");
+        Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, false);
+        Utility.SetCanvasGroupEnabled(endGameCanvas, true);
+        
     }
 
     bool CheckEndGame()
