@@ -32,12 +32,14 @@ public class GameController : MonoBehaviour
 
     public void PauseGame()
     {
+        Time.timeScale = 0.0f;
         Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, false);
         Utility.SetCanvasGroupEnabled(levelMenuGroup, true);
     }
 
     public void ContinueGame()
     {
+        Time.timeScale = 1.0f;
         Utility.SetCanvasGroupEnabled(levelMenuGroup, false);
         Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, true);
     }
