@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour
     public CanvasGroup buttonsCanvasGroup;
     public CanvasGroup endGameCanvas;
     public Button switchButton;
+    public SoundPlay gameWinSound;
+    public SoundPlay gameLostSound;
 
     [SerializeField] private Character[] playerCharacters = default;
     [SerializeField] private Character[] enemyCharacters = default;
@@ -112,6 +114,7 @@ public class GameController : MonoBehaviour
         endGameText.SetText("You won, congratulation!");
         Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, false);
         Utility.SetCanvasGroupEnabled(endGameCanvas, true);
+        gameWinSound.Play();
         Debug.Log("Player won");
     }
 
@@ -121,6 +124,7 @@ public class GameController : MonoBehaviour
         endGameText.SetText("You lost...");
         Utility.SetCanvasGroupEnabled(buttonsCanvasGroup, false);
         Utility.SetCanvasGroupEnabled(endGameCanvas, true);
+        gameLostSound.Play();
         
     }
 

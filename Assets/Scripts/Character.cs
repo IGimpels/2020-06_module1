@@ -26,6 +26,9 @@ public class Character : MonoBehaviour
         Fist,
     }
 
+    public SoundPlay attackPlay;
+    public SoundPlay deathPlay;
+    public SoundPlay attackReactionPlay;
     public Weapon weapon;
     public float runSpeed;
     public float distanceFromEnemy;
@@ -70,10 +73,12 @@ public class Character : MonoBehaviour
     {
         if (IsDead())
             return;
-
         health.ApplyDamage(1.0f); // FIXME захардкожено
         if (health.current <= 0.0f)
             state = State.BeginDying;
+        else
+            attackReactionPlay.Play();
+
     }
 
     [ContextMenu("Attack")]
@@ -149,6 +154,7 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginAttack:
+                attackPlay.Play();
                 animator.SetTrigger("MeleeAttack");
                 state = State.Attack;
                 break;
@@ -157,6 +163,7 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginShoot:
+                attackPlay.Play();
                 animator.SetTrigger("Shoot");
                 state = State.Shoot;
                 break;
@@ -165,6 +172,7 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginPunch:
+                attackPlay.Play();
                 animator.SetTrigger("Punch");
                 state = State.Punch;
                 break;
@@ -179,6 +187,7 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginDying:
+                deathPlay.Play();
                 animator.SetTrigger("Death");
                 state = State.Dead;
                 break;
